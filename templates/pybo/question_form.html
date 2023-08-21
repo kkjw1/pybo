@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h5 class="my-3 border-bottom pb-2">질문등록</h5>
+    <form method="post"> <!-- action 속성을 지정하지 않으면 현재 페이지의 url이 디폴트로 설정됨
+                            템플릿을 여러 기능에서 함께 사용할 경우에는 이처럼 form 의 action 속성을 비워둠-->
+        {% csrf_token %}
+        <!-- {{ form.as_p }} --><!-- form은 QuestionForm 객체, subject, content 속성에 해당하는 html 코드를 자동으로 생성 -->
+        <!-- 오류표시 Start -->
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+            {% if field.errors %}
+            <div>
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <!-- 오류표시 End -->
+        <div class="mb-3">
+            <label for="subject" class="form-label">제목</label>
+            <input type="text" class="form-control" name="subject" id="subject"
+                   value="{{ form.subject.value|default_if_none:'' }}">    <!-- 오류가 발생 시 기존 값 유지, 장고의 필터는 | 기호가 함께 사용됨-->
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">내용</label>
+            <textarea class="form-control" name="content" id="content" rows="10">
+                {{ form.content.value|default_if_none:'' }}</textarea> <!-- 값이 없을 경우 None 이
+                    라는 문자열이 표시되는데 None 대신 공백으로 표시하라는 의미 -->
+        </div>
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}
